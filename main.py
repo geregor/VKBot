@@ -1,5 +1,6 @@
 import json
 import asyncio
+import time
 from vkbottle.dispatch.rules.base import CommandRule
 from vkbottle.bot import Bot, Message
 from sett import token
@@ -18,7 +19,7 @@ def write_file(path: str, data: dict):
    with open ( path , 'w'  ) as f:
       json.dump ( data , f, ensure_ascii=False, indent=4 )
 
-@bot.on.private_message(CommandRule("вопрос добавить", symbols, 1,sep='`'))
+@bot.on.private_message(CommandRule("вопрос добавить", symbols, 1,sep=str(time.time())))
 async def add_quiz(message: Message, args: Tuple[str]):
    item = args[0]
    data = read_file( 'data.json' )
@@ -44,7 +45,7 @@ async def add_quiz(message: Message, args: Tuple[str]):
    write_file( 'data.json',data )
    await message.answer(f"Вопрос добавлен в базу данных под id {ID}")
 
-@bot.on.private_message(CommandRule("вопрос удалить", symbols, 1,sep='`'))
+@bot.on.private_message(CommandRule("вопрос удалить", symbols, 1,sep=str(time.time())))
 async def remove_quiz(message: Message, args: Tuple[str]):
    id = args[0]
    data = read_file( 'data.json' )
@@ -56,7 +57,7 @@ async def remove_quiz(message: Message, args: Tuple[str]):
    write_file ( 'data.json' , data )
    await message.answer(f"Вопрос с данным id был успешно удален")
 
-@bot.on.private_message(CommandRule("вопрос показать", symbols, 1,sep='`'))
+@bot.on.private_message(CommandRule("вопрос показать", symbols, 1,sep=str(time.time())))
 async def show_quiz(message: Message, args: Tuple[str]):
    id = args [ 0 ]
    data = read_file( 'data.json' )
@@ -68,7 +69,7 @@ async def show_quiz(message: Message, args: Tuple[str]):
    await message.answer(f"Вопрос: {info['question']}\n"
                         f"Ответ: {info['answer']}")
 
-@bot.on.private_message(CommandRule("ответ", symbols, 1,sep='`'))
+@bot.on.private_message(CommandRule("ответ", symbols, 1,sep=str(time.time())))
 async def show_quiz(message: Message, args: Tuple[str]):
    args = args[0]
    args = args.split(maxsplit=1)
