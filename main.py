@@ -5,7 +5,7 @@ from vkbottle.dispatch.rules.base import CommandRule
 from vkbottle.bot import Bot, Message
 from sett import token
 from typing import Tuple  # Нада
-from vkbottle import VKAPIError, BaseStateGroup, CtxStorage,GroupEventType, GroupTypes
+from vkbottle import VKAPIError, BaseStateGroup, CtxStorage,GroupEventType
 from keyboard import create_keyboard
 from file_for_text import QUESTIONS
 import re
