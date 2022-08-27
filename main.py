@@ -11,7 +11,7 @@ from file_for_text import QUESTIONS
 import re
 
 bot = Bot(token=token)  # Свой токен
-symbols = ["!"]  # С чего начинается команда
+prefix = [ "!" ]  # С чего начинается команда
 
 def read_file(path: str):
    with open(path, 'r') as f:
@@ -27,7 +27,7 @@ def make_pattern():
    pattern = re.compile ( regex )
    return pattern
 
-@bot.on.private_message(CommandRule("вопрос добавить", symbols, 1,sep=str(time.time())))
+@bot.on.private_message( CommandRule("вопрос добавить", prefix, 1, sep=str( time.time( ) ) ) )
 async def add_quiz(message: Message, args: Tuple[str]):
    try:
       item = args[0]
@@ -56,7 +56,7 @@ async def add_quiz(message: Message, args: Tuple[str]):
    except VKAPIError as e:
       print ( "Возникла ошибка [1]" , e.code )
 
-@bot.on.private_message(CommandRule("вопрос удалить", symbols, 1,sep=str(time.time())))
+@bot.on.private_message( CommandRule("вопрос удалить", prefix, 1, sep=str( time.time( ) ) ) )
 async def remove_quiz(message: Message, args: Tuple[str]):
    try:
       id = args[0]
@@ -71,7 +71,7 @@ async def remove_quiz(message: Message, args: Tuple[str]):
    except VKAPIError as e:
       print ( "Возникла ошибка [2]" , e.code )
 
-@bot.on.private_message(CommandRule("вопрос показать", symbols, 1,sep=str(time.time())))
+@bot.on.private_message( CommandRule("вопрос показать", prefix, 1, sep=str( time.time( ) ) ) )
 async def show_quiz(message: Message, args: Tuple[str]):
    try:
       id = args [ 0 ]
@@ -86,7 +86,7 @@ async def show_quiz(message: Message, args: Tuple[str]):
    except VKAPIError as e:
       print ( "Возникла ошибка [3]" , e.code )
 
-@bot.on.private_message(CommandRule("ответ", symbols, 1,sep=str(time.time())))
+@bot.on.private_message( CommandRule("ответ", prefix, 1, sep=str( time.time( ) ) ) )
 async def show_quiz(message: Message, args: Tuple[str]):
    try:
       args = args[0]
@@ -105,18 +105,18 @@ async def show_quiz(message: Message, args: Tuple[str]):
       print ( "Возникла ошибка [4]" , e.code )
 
 class QT(BaseStateGroup):
-   FirstStep = "SecondQuestion"
-   SecondStep = "ThirdQuestion"
-   ThirdStep = "FourthQuestion"
-   FourthStep = "FifthQuestion"
-   FifthStep = "SixteenQuestion"
+   FirstStep = "2"
+   SecondStep = "3"
+   ThirdStep = "4"
+   FourthStep = "5"
+   FifthStep = "6"
    NotIncluded = None #Это что бы не ломалось ничего
 
 QT_Arr = [QT.FirstStep,QT.SecondStep,QT.ThirdStep,QT.FourthStep,QT.FifthStep,QT.NotIncluded]
 # ctx будет нужен для сохранения ответов.
 ctx = CtxStorage()
 
-@bot.on.private_message(CommandRule("задать вопрос", symbols, 0))
+@bot.on.private_message( CommandRule("задать вопрос", prefix, 0 ) )
 async def ask_question(message: Message):
    try:
       global keyboard_text
@@ -137,7 +137,6 @@ async def ask_question(message: Message):
 @bot.on.raw_event(GroupEventType.MESSAGE_EVENT)
 async def MessageTree(message: Message):
    try:
-      print(message)
       await bot.api.messages.send_message_event_answer(
          event_id=message['object']['event_id'],
          peer_id=message['object']['peer_id'],
@@ -149,7 +148,6 @@ async def MessageTree(message: Message):
       # Смотрим что бы в тексте не были запрещенные символы
       pattern = make_pattern ( )
       if pattern.search ( messageText ) is None:
-         #await bot.api.messages.send( )
          await bot.api.messages.send ( message="Я вас не понял!", peer_id=Info.peer_id, random_id=0 )
          return
       global keyboard_text
